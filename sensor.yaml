@@ -1,0 +1,55 @@
+esphome:
+  name: "solar-generation"
+
+esp8266:
+  board: d1_mini_lite
+
+# Enable logging
+logger: 
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "YOUR_API_ENCRYPTION_KEY"
+
+ota:
+  platform: esphome
+  password: "YOUR_OTA_PASSWORD"
+
+wifi:
+  ssid: "YOUR_WIFI_SSID"
+  password: "YOUR_WIFI_PASSWORD"
+
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.x.x
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.x.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.0.0  
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "SolarGen Fallback Hotspot"
+    password: "YOUR_AP_PASSWORD"
+
+sensor:
+  - platform: pulse_counter
+    pin: D4
+    unit_of_measurement: 'kW'
+    name: 'Power Meter'
+    update_interval: 10s 
+    device_class: power
+    filters:
+      - multiply: 0.06  # (60s/1000 pulses per kWh)
+    total:
+      unit_of_measurement: 'kWh'
+      accuracy_decimals: 2
+      icon: mdi:gauge
+      name: 'Energy Meter'
+      filters:
+        - multiply: 0.001  # (1/1000 pulses per kWh)
+
+  - platform: wifi_signal
+    name: "Solar Generation WiFi Signal"
+    update_interval: 60s
