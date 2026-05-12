@@ -16,11 +16,13 @@ An ESPHome configuration for monitoring solar (or mains) energy generation using
 
 Most modern energy meters have an LED that flashes at a fixed rate per kWh. You can detect these pulses in two ways:
 
-**Option A — LDR (Light Dependent Resistor)**
-Place an LDR directly over the meter's impulse LED. Wire it as a voltage divider to D4 with a 10kΩ pull-up resistor to 3.3V.
+**Option A — Phototransistor breakout board (recommended)**
+A small phototransistor module (such as those based on the TCRT5000 or a bare NPN phototransistor like the PT333-3C) responds much faster than an LDR, making it well suited to meters with high pulse rates. Position the sensor directly over the meter's impulse LED, connect VCC to 3.3V, GND to GND, and the signal output to D4. Most ready-made modules include the necessary pull-up resistor on board.
 
-**Option B — Optocoupler (preferred)**
-Use a PC817 or similar optocoupler connected to the meter's dedicated pulse output terminals (if available). This gives a clean, noise-free signal.
+> 💡 Avoid LDRs — their relatively slow response time can cause missed pulses, particularly on meters running at 1600 pulses/kWh or above.
+
+**Option B — Optocoupler**
+Use a PC817 or similar optocoupler connected to the meter's dedicated pulse output terminals (if available). This gives a clean, noise-free signal and is the most reliable option where the meter exposes a separate S0 pulse port.
 
 > ⚠️ Never connect the ESP directly to mains voltage or meter terminals. Always use optical isolation.
 
